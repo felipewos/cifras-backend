@@ -2,14 +2,29 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const cors = require('cors'); // <-- importa o CORS
+const cors = require('cors');
 
 const app = express();
 
-// Habilita CORS para qualquer origem (ou configure um domínio específico se preferir)
-app.use(cors()); // <-- aplica o middleware CORS
-
+app.use(cors());
 app.use(bodyParser.json());
+
+// Rota de teste para retornar uma cifra estática
+app.get("/cifra", (req, res) => {
+  res.json({
+    titulo: "Raridade",
+    artista: "Anderson Freire",
+    cifra: `
+Tom: A
+Intro: A9  F#m7  D9  E
+
+A9            E/G#
+Você é um espelho
+      F#m7             D9
+Que reflete a imagem do Senhor...
+`
+  });
+});
 
 app.post('/enviar-cifra', async (req, res) => {
   const { title, content } = req.body;
