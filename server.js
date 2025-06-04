@@ -6,10 +6,11 @@ const cors = require('cors');
 
 const app = express();
 
+// Habilita CORS para qualquer origem
 app.use(cors());
 app.use(bodyParser.json());
 
-// Rota de teste para retornar uma cifra estática
+// Rota de teste para ver se o backend está no ar
 app.get("/cifra", (req, res) => {
   res.json({
     titulo: "Raridade",
@@ -26,8 +27,14 @@ Que reflete a imagem do Senhor...
   });
 });
 
-app.post('/enviar-cifra', async (req, res) => {
-  const { title, content } = req.body;
+// Rota usada pelo editor.html para enviar uma cifra como JSON
+app.post('/upload', async (req, res) => {
+  const content = req.body;
+  const title = content.title;
+
+  if (!title || !content.lines) {
+    return res.status(400).json({ message: "JSON inválido. Título ou linhas ausentes." });
+  }
 
   const path = `cifras/${title.toLowerCase().replace(/ /g, "_")}.json`;
   const message = `Adicionar cifra ${title}`;
@@ -48,14 +55,14 @@ app.post('/enviar-cifra', async (req, res) => {
       }
     );
 
-    res.json({ success: true, url: response.data.content.html_url });
+    res.json({ success: true, message: `Cifra '${title}' enviada com sucesso!`, url: response.data.content.html_url });
   } catch (error) {
     console.error(error.response?.data || error.message);
-    res.status(500).json({ success: false, error: error.response?.data?.message || error.message });
+    res.status(500).json({ success: false, message: error.response?.data?.message || error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
