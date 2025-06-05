@@ -28,7 +28,7 @@ Que reflete a imagem do Senhor...
 });
 
 // Rota usada pelo editor.html para enviar uma cifra como JSON
-app.post('/upload', async (req, res) => {
+app.post('/enviar-cifra', async (req, res) => {
   const content = req.body;
   const title = content.title;
 
